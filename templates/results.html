@@ -8,9 +8,12 @@
 <body class="bg-light">
 <div class="container py-5 text-center">
     <div class="bg-white p-5 rounded shadow-sm">
-        <h1 class="mb-4">🎉 Results</h1>
-        <p class="fs-4">You got <strong>{{ score }}</strong> out of <strong>{{ total }}</strong> correct.</p>
-        <a href="/" class="btn btn-outline-secondary mt-3">Try Again</a>
+        <h1 class="mb-4">🎉 Rezultāti</h1>
+        {% for party, result in results.items() %}
+        <p class="fs-4">Jums vislabāk atbilst <strong>{{ party }}</strong> ar {{ result.percentage }}% atbilstību!</p>
+        <p>{{ result.info }}</p>
+        {% endfor %}
+        <a href="/" class="btn btn-outline-secondary mt-3">Pārbaudīt vēlreiz</a>
     </div>
 </div>
 </body>
