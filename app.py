@@ -81,8 +81,11 @@ def results():
             'percentage': round(percentage, 2),
             'info': partijas_info[party]['kopsavilkums']
         }
+    # Atrast augstāko procentu partiju
+    best_party = max(results, key=lambda party: results[party]['percentage'])
+    best_party_result = results[best_party]
 
-    return render_template('results.html', results=results, partijas_info=partijas_info)
+    return render_template('results.html', best_party=best_party, best_party_result=best_party_result, results=results)
 
 if __name__ == '__main__':
     app.run(debug=True)
