@@ -1,3 +1,4 @@
+import json
 from flask import Flask, render_template, request
 from collections import defaultdict
 
@@ -17,6 +18,13 @@ partijas_info = {
         'uzsvari': 'Videi draudzīga pilsēta, sociālā taisnīgums, līdzdalība',
         'kopsavilkums': 'Progresīvie strādā pie ilgtspējīgas attīstības, sabiedrības līdzdalības un sociālās taisnīguma.',
     },
+}
+
+# Saīsināti partiju nosaukumi
+shortened_party_names = {
+    'Jaunā VIENOTĪBA': 'JV',
+    'Latvija Pirmajā Vietā': 'LPV',
+    'Progresīvie': 'P'
 }
 
 # Jautājumi un atbildes
@@ -75,17 +83,20 @@ def results():
     # Kopējais punktu skaits
     total_questions = len(questions)
     results = {}
+
+    # Izmantojot saīsinātos nosaukumus
     for party, score in party_scores.items():
+        # Saīsinājums partijas nosaukumam
+        shortened_name = shortened_party_names.get(party, party)  # Ja nav saīsinājuma, izmanto pilno nosaukumu
         percentage = (score / total_questions) * 100
-        results[party] = {
-            'percentage': round(percentage, 2),
-            'info': partijas_info[party]['kopsavilkums']
-        }
+        results[shortened_name] = round(percentage, 2)
+
     # Atrast augstāko procentu partiju
-    best_party = max(results, key=lambda party: results[party]['percentage'])
+    best_party = max(results, key=lambda party: results[party])
     best_party_result = results[best_party]
 
-    return render_template('results.html', best_party=best_party, best_party_result=best_party_result, results=results)
+    # Pārsūta JSON datus uz front-end, tikai ar saīsināto nosaukumu un procentiem
+    return render_template('results.html', best_party=best_party, best_party_result=best_party_result, results=json.dumps(results))
 
 if __name__ == '__main__':
     app.run(debug=True)
